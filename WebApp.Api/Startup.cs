@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using WebApp.Api.Configuration;
 using WebApp.Api.Services;
 using WebApp.Api.Utillits;
@@ -58,9 +59,28 @@ namespace WebApp.Api
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Secret"])),
                     ClockSkew=TimeSpan.FromSeconds(15)  // разница но непомню за что точно отвечает 
                 };
-                #endregion
+                
 
             });
+            #endregion
+
+            //swagger
+            services.AddSwaggerGen(options =>
+            {
+                options.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "Test API",
+                    Version = "1.0.0",
+                    Description = "Just for test",
+                    Contact=new OpenApiContact
+                    {
+                        Email="TengriBizMenen@nomad.az",
+                        Name="Oguz Khan",
+                        Url= new Uri("https://ru.wikipedia.org/wiki/%D0%9E%D0%B3%D1%83%D0%B7-%D1%85%D0%B0%D0%BD")
+                    }
+                });
+            });
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -69,6 +89,13 @@ namespace WebApp.Api
             {
                 app.UseDeveloperExceptionPage();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(cfg =>
+            {
+                cfg.SwaggerEndpoint("swagger/v1/swagger.json","v1");
+                cfg.RoutePrefix = String.Empty;
+            });
 
             app.UseRouting();
             app.UseAuthentication();
