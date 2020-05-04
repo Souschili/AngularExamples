@@ -25,7 +25,7 @@ namespace WebApp.Api.Controllers
             tokenGenerator = token;
         }
 
-        [HttpGet("")]
+        [HttpGet("token")]
         public async Task<IActionResult> IndexAsync()
         {
             var user = await userRepository.GetUser("Samurai");
