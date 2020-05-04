@@ -57,9 +57,9 @@ namespace WebApp.Api
                     ValidIssuer = Configuration["Jwt:Issuer"],  //валидный издатель
                     ValidAudience = Configuration["Jwt:Audience"], // валидный потребитель
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Secret"])),
-                    ClockSkew=TimeSpan.FromSeconds(15)  // разница но непомню за что точно отвечает 
+                    ClockSkew = TimeSpan.FromSeconds(15)  // разница но непомню за что точно отвечает 
                 };
-                
+
 
             });
             #endregion
@@ -72,13 +72,40 @@ namespace WebApp.Api
                     Title = "Test API",
                     Version = "1.0.0",
                     Description = "Just for test",
-                    Contact=new OpenApiContact
+                    Contact = new OpenApiContact
                     {
-                        Email="TengriBizMenen@nomad.az",
-                        Name="Oguz Khan",
-                        Url= new Uri("https://ru.wikipedia.org/wiki/%D0%9E%D0%B3%D1%83%D0%B7-%D1%85%D0%B0%D0%BD")
+                        Email = "TengriBizMenen@nomad.az",
+                        Name = "Oguz Khan",
+                        Url = new Uri("https://ru.wikipedia.org/wiki/%D0%9E%D0%B3%D1%83%D0%B7-%D1%85%D0%B0%D0%BD")
                     }
                 });
+
+                options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer",
+                    BearerFormat = "JWT",
+                    In = ParameterLocation.Header,
+                    Description = "JWT Authorization header using the Bearer scheme."
+                });
+
+                options.AddSecurityRequirement(new OpenApiSecurityRequirement
+                {
+                    {
+                          new OpenApiSecurityScheme
+                            {
+                                Reference = new OpenApiReference
+                                {
+                                    Type = ReferenceType.SecurityScheme,
+                                    Id = "Bearer"
+                                }
+                            },
+                            new string[] {}
+
+                    }
+                });
+
             });
 
         }
@@ -93,7 +120,7 @@ namespace WebApp.Api
             app.UseSwagger();
             app.UseSwaggerUI(cfg =>
             {
-                cfg.SwaggerEndpoint("swagger/v1/swagger.json","v1");
+                cfg.SwaggerEndpoint("swagger/v1/swagger.json", "v1");
                 cfg.RoutePrefix = String.Empty;
             });
 

@@ -7,6 +7,7 @@ namespace WebApp.Api.Models
 {
     public class MusicBands
     {
+        public int MusicBandId { get; set; }
 
     }
 }
